@@ -1,0 +1,6 @@
+{
+    "spin_otter": true,
+    "upgrade_otter": true,
+    "account_delay": [5, 10],
+    "cycle_delay": [1440, 2880]
+}
