@@ -339,9 +339,26 @@ class OtterLoot:
         
         return spin_otter, count, upgrade_otter
 
-    def process_query(self, query: str, spin_otter: bool, count: int, upgrade_otter: bool):
+    def save_token(self, id, token):
+        tokens = json.loads(open("tokens.json").read())
+        tokens[str(id)] = token
+        open("tokens.json", "w").write(json.dumps(tokens, indent=4))
 
-        token = self.auth_login(query)
+    def get_token(self, id):
+        tokens = json.loads(open("tokens.json").read())
+        if str(id) not in tokens.keys():
+            return None
+        return tokens[str(id)]
+
+
+    def process_query(self, query: str, spin_otter: bool, count: int, upgrade_otter: bool, id):
+
+        token = self.get_token(id)
+        if token is None:
+            token = self.auth_login(query)
+            if token is None:
+                return
+            self.save_token(id, token)
 
         if not token:
             self.log(
@@ -849,7 +866,7 @@ class OtterLoot:
                     user_id = str(user_info.get('id'))
                     self.headers = get_headers(user_id)
                     try:
-                        self.process_query(query, spin_otter, count, upgrade_otter)
+                        self.process_query(query, spin_otter, count, upgrade_otter, user_id)
                     except Exception as e:
                         self.log(f"{Fore.RED + Style.BRIGHT}An error process_query: {e}{Style.RESET_ALL}")
 
