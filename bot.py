@@ -901,7 +901,7 @@ class OtterLoot:
 
 if __name__ == "__main__":
     if s_name() == 'Windows':
-        sys(f'Otter_loot')
+        sys(f'cls && title Otter_loot')
     else:
         sys('clear')
     bot = OtterLoot()
