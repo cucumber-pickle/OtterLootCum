@@ -8,6 +8,8 @@ from base64 import urlsafe_b64decode
 import random
 from datetime import datetime, timedelta
 import time
+from platform import system as s_name
+from os import system as sys
 
 
 
@@ -898,6 +900,10 @@ class OtterLoot:
             self.log(f"{Fore.RED + Style.BRIGHT}An error occurred: {e}{Style.RESET_ALL}")
 
 if __name__ == "__main__":
+    if s_name() == 'Windows':
+        sys(f'Otter_loot')
+    else:
+        sys('clear')
     bot = OtterLoot()
     bot.clear_terminal()
     bot.welcome()
