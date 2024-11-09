@@ -4,6 +4,7 @@ import os
 import random
 from core.helper import get_headers, countdown_timer, extract_user_data, config
 from colorama import *
+from base64 import urlsafe_b64decode
 import random
 from datetime import datetime, timedelta
 import time
@@ -350,11 +351,25 @@ class OtterLoot:
             return None
         return tokens[str(id)]
 
+    def is_expired(self, token):
+        header, payload, sign = token.split(".")
+        deload = urlsafe_b64decode(payload + "==").decode()
+        jeload = json.loads(deload)
+        now = int(datetime.now().timestamp())
+        if now > jeload["exp"]:
+            return True
+        return False
 
     def process_query(self, query: str, spin_otter: bool, count: int, upgrade_otter: bool, id):
 
         token = self.get_token(id)
         if token is None:
+            token = self.auth_login(query)
+            if token is None:
+                return
+            self.save_token(id, token)
+
+        if self.is_expired(token):
             token = self.auth_login(query)
             if token is None:
                 return
